@@ -5,6 +5,7 @@ object LuhnCheck {
   val lookup : Map[Char, Int] = Map('0'->0, '1'->2, '2'->4, '3'->6, '4'->8, '5'->1, '6'->3, '7'->5, '8'->7, '9'->9)
   case class LuhnChar(c: Char, var mask: Boolean) {
     def char = if (mask) 'X' else c
+    def int = c.getNumericValue
   }
 
   class LuhnWindow(val size: Int) {
@@ -27,7 +28,7 @@ object LuhnCheck {
       if (!full)
         false
       else
-        window.zipWithIndex.map(t => if (t._2 % 2 == 1) lookup(t._1.c) else t._1.c.getNumericValue).sum % 10 == 0
+        window.foldLeft((0, false)) { (s, lc) => val i = if (s._2) lc.int * 2 else lc.int; (s._1 + i / 10 + i % 10, !s._2)}._1 % 10 == 0
     }
   }
 
