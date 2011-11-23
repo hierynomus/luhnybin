@@ -2,7 +2,6 @@ import collection.immutable.IndexedSeq
 import collection.mutable.ListBuffer
 
 object LuhnCheck {
-  val lookup : Map[Char, Int] = Map('0'->0, '1'->2, '2'->4, '3'->6, '4'->8, '5'->1, '6'->3, '7'->5, '8'->7, '9'->9)
   case class LuhnChar(c: Char, var mask: Boolean) {
     def char = if (mask) 'X' else c
     def int = c.getNumericValue
@@ -25,10 +24,7 @@ object LuhnCheck {
     def full = window.size == size
 
     def containsLuhn = {
-      if (!full)
-        false
-      else
-        window.foldLeft((0, false)) { (s, lc) => val i = if (s._2) lc.int * 2 else lc.int; (s._1 + i / 10 + i % 10, !s._2)}._1 % 10 == 0
+      full && window.foldLeft((0, false)) { (s, lc) => val i = if (s._2) lc.int * 2 else lc.int; (s._1 + i / 10 + i % 10, !s._2)}._1 % 10 == 0
     }
   }
 
@@ -45,7 +41,5 @@ object LuhnCheck {
     seq.map(_.char).mkString
   }
 
-
   def partOfLuhn(l: LuhnChar) = l.c == ' ' || l.c == '-' || l.c.isDigit
-
 }
